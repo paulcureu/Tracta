@@ -1,5 +1,3 @@
-# setup.ps1
-
 # Verifica daca Python este instalat
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     Write-Error "Python nu este instalat sau nu este in PATH. Instaleaza-l de la https://www.python.org/downloads/"
@@ -12,17 +10,37 @@ if (-not (Test-Path "requirements.txt")) {
     exit 1
 }
 
-# Creeaza mediu virtual daca nu exista
-if (-not (Test-Path "venv")) {
-    Write-Host "Creare mediu virtual..."
-    python -m venv venv
-} else {
-    Write-Host "Mediu virtual deja existent. Se trece la activare..."
-}
+# Meniu pentru alegerea mediului virtual
+Write-Host "Alege mediul virtual pe care vrei sa-l activezi:"
+Write-Host "1. venv (varianta standard)"
+Write-Host "2. venv_tf (pentru TensorFlow)"
+$choice = Read-Host "Introdu optiunea (1 sau 2)"
 
-# Activeaza mediul virtual
-Write-Host "Activare mediu virtual..."
-. .\venv\Scripts\Activate.ps1
+# Creare mediu virtual
+if ($choice -eq 1) {
+    # Creeaza sau activeaza mediul virtual venv
+    if (-not (Test-Path "venv")) {
+        Write-Host "Creare mediu virtual 'venv'..."
+        python -m venv venv
+    } else {
+        Write-Host "Mediu virtual 'venv' deja existent. Se trece la activare..."
+    }
+    # Activeaza mediul virtual venv
+    . .\venv\Scripts\Activate.ps1
+} elseif ($choice -eq 2) {
+    # Creeaza sau activeaza mediul virtual venv_tf
+    if (-not (Test-Path "venv_tf")) {
+        Write-Host "Creare mediu virtual 'venv_tf' (TensorFlow)..."
+        python -m venv venv_tf
+    } else {
+        Write-Host "Mediu virtual 'venv_tf' deja existent. Se trece la activare..."
+    }
+    # Activeaza mediul virtual venv_tf
+    . .\venv_tf\Scripts\Activate.ps1
+} else {
+    Write-Host "Optiune invalida, scriptul se opreste."
+    exit 1
+}
 
 # Actualizeaza pip
 Write-Host "Actualizare pip la cea mai recenta versiune..."
